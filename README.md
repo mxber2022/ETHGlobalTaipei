@@ -1,4 +1,4 @@
-# 🌍 Emergency: Real-Time Disaster Communication Platform
+#
 
 **Emergency** is a real-time communication platform designed to empower individuals and rescue teams during natural disasters like typhoons, floods, or earthquakes. By integrating a map-based interface, instant messaging, video updates, and community-driven support features, Emergency ensures seamless coordination and life-saving communication in crisis zones.
 
