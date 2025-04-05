@@ -28,7 +28,7 @@ export const SignIn = () => {
     }
     const res = await fetch(`/api/nonce`);
     const { nonce } = await res.json();
-
+    console.log("nonce: ", nonce);
     const { commandPayload: generateMessageResult, finalPayload } =
       await MiniKit.commandsAsync.walletAuth({
         nonce: nonce,
