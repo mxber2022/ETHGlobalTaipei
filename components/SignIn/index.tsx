@@ -108,7 +108,7 @@ export const SignIn = () => {
               </div>
 
               <button
-                onClick={() => signInWithWallet()}
+                onClick={async () => await signInWithWallet()}
                 className="w-full bg-red-600 text-white hover:bg-red-700 px-6 py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 font-semibold text-base shadow-lg hover:shadow-xl group"
               >
                 <LogIn className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-200" />
