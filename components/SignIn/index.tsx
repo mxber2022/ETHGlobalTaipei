@@ -1,7 +1,15 @@
 "use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
-import { LogIn, LogOut, User, Loader2, Shield, AlertTriangle } from "lucide-react";
+import {
+  LogIn,
+  LogOut,
+  User,
+  Loader2,
+  Shield,
+  AlertTriangle,
+} from "lucide-react";
+import { MiniKit } from "@worldcoin/minikit-js";
 
 export const SignIn = () => {
   const { data: session, status } = useSession();
@@ -13,6 +21,28 @@ export const SignIn = () => {
       </div>
     );
   }
+
+  const signInWithWallet = async () => {
+    if (!MiniKit.isInstalled()) {
+      return;
+    }
+    const res = await fetch(`/api/nonce`);
+    const { nonce } = await res.json();
+
+    const { commandPayload: generateMessageResult, finalPayload } =
+      await MiniKit.commandsAsync.walletAuth({
+        nonce: nonce,
+        requestId: "0", // Optional
+        expirationTime: new Date(
+          new Date().getTime() + 7 * 24 * 60 * 60 * 1000
+        ),
+        notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+        statement:
+          "This is my statement and here is a link https://worldcoin.com/apps",
+      });
+
+    console.log("generateMessageResult: ", generateMessageResult);
+  };
 
   if (session) {
     return (
@@ -42,20 +72,21 @@ export const SignIn = () => {
             <AlertTriangle className="w-5 h-5" />
             Emergency Response Platform
           </div>
-          
+
           <div className="space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold">
               <span className="bg-gradient-to-r from-red-600 to-red-400/60 text-transparent bg-clip-text">
-                Welcome 
+                Welcome
               </span>
             </h1>
-            
+
             <p className="text-lg text-gray-500 max-w-sm mx-auto leading-relaxed">
-              Your presence matters. Sign in to help coordinate emergency responses and save lives.
+              Your presence matters. Sign in to help coordinate emergency
+              responses and save lives.
             </p>
           </div>
         </div>
-  
+
         <div className="relative">
           <div className="absolute -inset-1 bg-gradient-to-r from-red-300 via-red-200 to-red-300 rounded-2xl blur-2xl opacity-50"></div>
           <div className="relative bg-white rounded-2xl shadow-xl border p-8 space-y-8">
@@ -64,26 +95,31 @@ export const SignIn = () => {
                 <div className="flex items-start gap-4">
                   <Shield className="w-6 h-6 text-red-600 mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Secure & Private Access</h3>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                      Secure & Private Access
+                    </h3>
                     <p className="text-base text-gray-500 leading-relaxed">
-                      Your information is protected with enterprise-grade encryption. We prioritize the security of emergency responders.
+                      Your information is protected with enterprise-grade
+                      encryption. We prioritize the security of emergency
+                      responders.
                     </p>
                   </div>
                 </div>
               </div>
-  
+
               <button
-                onClick={() => signIn()}
+                onClick={() => signInWithWallet()}
                 className="w-full bg-red-600 text-white hover:bg-red-700 px-6 py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 font-semibold text-base shadow-lg hover:shadow-xl group"
               >
                 <LogIn className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-200" />
                 Sign In
               </button>
             </div>
-  
+
             <div className="text-center">
               <p className="text-sm text-gray-500">
-                By signing in, you agree to our Terms of Service and Privacy Policy
+                By signing in, you agree to our Terms of Service and Privacy
+                Policy
               </p>
             </div>
           </div>
@@ -91,5 +127,4 @@ export const SignIn = () => {
       </div>
     </div>
   );
-  
 };
